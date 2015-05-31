@@ -2,6 +2,16 @@
 
 A Grunt interface into the Amazon Web Services Node.JS SDK `aws-sdk`
 
+[![NPM version](https://nodei.co/npm/grunt-aws.png?compact=true)](https://npmjs.org/package/grunt-aws)
+
+## Notes on this fork: taken fom 0.4.0
+
+This is to allow command line arguments for the options, you can set any option by passing it in like so:
+
+```sh
+grunt s3 --region=xxx
+```
+
 ## Getting Started
 This plugin requires Grunt `0.4.x`
 
@@ -64,11 +74,11 @@ See the complete example [here](https://github.com/jpillora/grunt-aws/tree/maste
 
 ### Options
 
-#### `accessKeyId` *required* (String) 
+#### `accessKeyId` *required* (String)
 
 Amazon access key id
 
-#### `secretAccessKey` *required* (String) 
+#### `secretAccessKey` *required* (String)
 
 Amazon secret access key
 
@@ -148,7 +158,7 @@ Default `60*60*1000` (1hr)
 Number of milliseconds to wait before retrieving the
 object list from S3. If you only modify this bucket
 from `grunt-aws` on one machine then it can be `Infinity`
-if you like. To disable cache, set it to `0`. 
+if you like. To disable cache, set it to `0`.
 
 #### `headers` (Object)
 
@@ -160,14 +170,14 @@ The following are allowed:
 * `ContentType` (will override mime type lookups)
 * `ContentDisposition`
 * `ContentEncoding`
-* `CacheControl` (converts numbers into strings as `max-age=<num>, public`)
+* `CacheControl` (accepts a string or converts numbers into header as `max-age=<num>, public`)
 * `Expires` (converts dates to strings with `toUTCString()`)
 * `GrantFullControl`
 * `GrantRead`
 * `GrantReadACP`
 * `GrantWriteACP`
 * `ServerSideEncryption` (`"AES256"`)
-* `StorageClass` (`"STANDARD"` or `"REDUCED_REDUNDANCY"`) 
+* `StorageClass` (`"STANDARD"` or `"REDUCED_REDUNDANCY"`)
 * `WebsiteRedirectLocation`
 
 The properties not listed are still available as:
@@ -187,7 +197,7 @@ For example `{Foo:"42"}` becomes `x-amz-meta-foo:42`.
 
 #### `charset` (String)
 
-Define a charset to set on your ContentType. Ie. `utf-8`
+Add a charset to your `Content-Type`. For example: `utf-8`.
 
 #### `mime` (Object)
 
@@ -311,6 +321,16 @@ s3: {
     src: "secrets/**"
   },
 
+  //upload the public/ folder with a custom Cache-control header
+  longTym: {
+    options: {
+      headers: {
+        CacheControl: 'max-age=900, public, must-revalidate'
+      }
+    }
+    src: "public/**"
+  },
+
   //upload the public/ folder with a 2 year cache time
   longTym: {
     options: {
@@ -320,6 +340,7 @@ s3: {
     }
     src: "public/**"
   },
+
   //upload the public/ folder with a specific expiry date
   beryLongTym: {
     options: {
@@ -379,11 +400,11 @@ To create two new records - the first resolving to an IP address and the second 
 
 ### Options
 
-#### `accessKeyId` *required* (String) 
+#### `accessKeyId` *required* (String)
 
 Amazon access key id
 
-#### `secretAccessKey` *required* (String) 
+#### `secretAccessKey` *required* (String)
 
 Amazon secret access key
 
@@ -391,9 +412,9 @@ Amazon secret access key
 
 An object containing names of zones and a list of DNS records to be created for this zone in Route 53.
 
-Each record requires `name`, `type` and `value` to be set. The `name` property is the new domain to be created. The `type` is the DNS type e.g. CNAME, ANAME, etc.. The `value` is a list of domain names or IP addresses that the DNS entry will resolve to. 
+Each record requires `name`, `type` and `value` to be set. The `name` property is the new domain to be created. The `type` is the DNS type e.g. CNAME, ANAME, etc.. The `value` is a list of domain names or IP addresses that the DNS entry will resolve to.
 
-It is also possible to specify any of the additional options described in the [ResourceRecordSet section of the changeResourceRecordSets method](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Route53.html#changeResourceRecordSets-property). For example, `AliasTarget` could be used to set up an alias record.	
+It is also possible to specify any of the additional options described in the [ResourceRecordSet section of the changeResourceRecordSets method](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Route53.html#changeResourceRecordSets-property). For example, `AliasTarget` could be used to set up an alias record.
 
 #### `TTL` (Number)
 
@@ -411,7 +432,7 @@ Performs a preview run displaying what would be modified
 
 Default `20`
 
-Number of Route53 operations that may be performed concurrently 
+Number of Route53 operations that may be performed concurrently
 
 #### `cache` (Boolean)
 
@@ -448,10 +469,14 @@ To invalidate the files `/index.html` and `/pages/whatever.html`
         accessKeyId: "<%= aws.accessKeyId %>",
         secretAccessKey: "<%= aws.secretAccessKey %>",
         distributionId: '...',
-        invalidations: [
-          '/index.html',
-          '/pages/whatever.html'
-        ]
+      },
+      html: {
+        options: {
+          invalidations: [
+            '/index.html',
+            '/pages/whatever.html'
+          ]
+        }
       }
     }
   });
@@ -459,11 +484,11 @@ To invalidate the files `/index.html` and `/pages/whatever.html`
 
 ### Options
 
-#### `accessKeyId` *required* (String) 
+#### `accessKeyId` *required* (String)
 
 Amazon access key id
 
-#### `secretAccessKey` *required* (String) 
+#### `secretAccessKey` *required* (String)
 
 Amazon secret access key
 

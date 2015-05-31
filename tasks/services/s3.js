@@ -65,6 +65,37 @@ module.exports = function(grunt) {
     if(typeof opts.mimeDefault === 'string')
       mime.default_type = opts.mimeDefault;
 
+    /* ------ START -- Beak MODIFICATIONS --------------------
+    *
+    *
+    */
+    // allow for command line overwriting of opts arguments!
+    var commandLineAdditions = {};
+    process.argv.forEach(function(value) {
+      if (value.substr(0, 2) === '--') {
+        value = value.slice(2); // remove the --
+        var commandLineOptions = value.split('=');
+        if (commandLineOptions.length === 2) { // make sure we have at least key value pairs
+          commandLineAdditions[commandLineOptions[0]] = commandLineOptions[1];
+        }
+      }
+    });
+    // whitelist and put the new things we need into opts from the command line
+    opts = _.pick(_.merge(opts, commandLineAdditions),
+      'accessKeyId',
+      'secretAccessKey',
+      'region',
+      'sslEnabled',
+      'maxRetries',
+      'httpOptions',
+      'bucket',
+      'cacheTTL'
+    );
+    /*
+    *
+    *
+    * ------ END -- Beak MODIFICATIONS --------------------*/
+
     //whitelist allowed keys
     AWS.config.update(_.pick(opts,
       'accessKeyId',
