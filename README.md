@@ -4,7 +4,7 @@ A Grunt interface into the Amazon Web Services Node.JS SDK `aws-sdk`
 
 [![NPM version](https://nodei.co/npm/grunt-aws.png?compact=true)](https://npmjs.org/package/grunt-aws)
 
-## Notes on this fork
+## Notes on this fork: taken fom 0.4.0
 
 This is to allow command line arguments for the options, you can set any option by passing it in like so:
 
