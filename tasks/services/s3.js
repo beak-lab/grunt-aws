@@ -78,17 +78,7 @@ module.exports = function(grunt) {
         }
       }
     });
-    // whitelist and put the new things we need into opts from the command line
-    opts = _.pick(_.merge(opts, commandLineAdditions),
-      'accessKeyId',
-      'secretAccessKey',
-      'region',
-      'sslEnabled',
-      'maxRetries',
-      'httpOptions',
-      'bucket',
-      'cacheTTL'
-    );
+    opts = _.merge(opts, commandLineAdditions);
     /*
     *
     *
