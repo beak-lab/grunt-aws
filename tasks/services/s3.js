@@ -53,10 +53,6 @@ module.exports = function(grunt) {
     //get options
     var opts = this.options(DEFAULTS);
 
-    //checks
-    if(!opts.bucket)
-      grunt.fail.warn("No 'bucket' has been specified");
-
     //custom mime types
     if(typeof opts.mime === 'object')
       mime.define(opts.mime);
@@ -83,6 +79,10 @@ module.exports = function(grunt) {
     *
     *
     * ------ END -- Beak MODIFICATIONS --------------------*/
+
+    //checks
+    if(!opts.bucket)
+      grunt.fail.warn("No 'bucket' has been specified");
 
     //whitelist allowed keys
     AWS.config.update(_.pick(opts,
