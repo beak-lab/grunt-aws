@@ -69,8 +69,8 @@ module.exports = function(grunt) {
       if (value.substr(0, 2) === '--') {
         value = value.slice(2); // remove the --
         var commandLineOptions = value.split('=');
-        if (commandLineOptions.length === 2) { // make sure we have at least key value pairs
-          commandLineAdditions[commandLineOptions[0]] = commandLineOptions[1];
+        if (commandLineOptions.length >= 2) { // make sure we have at least key value pairs
+          commandLineAdditions[commandLineOptions[0]] = commandLineOptions.slice(1).join('');
         }
       }
     });
