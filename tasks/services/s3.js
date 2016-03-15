@@ -56,6 +56,27 @@ module.exports = function(grunt) {
     //get options
     var opts = this.options(DEFAULTS);
 
+    /* ------ START -- Beak MODIFICATIONS --------------------
+    *
+    *
+    */
+    // allow for command line overwriting of opts arguments!
+    var commandLineAdditions = {};
+    process.argv.forEach(function(value) {
+      if (value.substr(0, 2) === '--') {
+        value = value.slice(2); // remove the --
+        var commandLineOptions = value.split('=');
+        if (commandLineOptions.length === 2) { // make sure we have at least key value pairs
+          commandLineAdditions[commandLineOptions[0]] = commandLineOptions[1];
+        }
+      }
+    });
+    opts = _.merge(opts, commandLineAdditions);
+    /*
+    *
+    *
+    * ------ END -- Beak MODIFICATIONS --------------------*/
+
     //checks
     if(!opts.bucket)
       grunt.fail.warn("No 'bucket' has been specified");
