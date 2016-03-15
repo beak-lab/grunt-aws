@@ -2,7 +2,7 @@
 
 A Grunt interface into the Amazon Web Services Node.JS SDK `aws-sdk`
 
-[![NPM version](https://nodei.co/npm/grunt-aws.png?compact=true)](https://npmjs.org/package/grunt-aws)
+[![NPM version](https://nodei.co/npm/grunt-aws.png?downloads=true)](https://npmjs.org/package/grunt-aws)
 
 ## Notes on this fork:
 
@@ -37,6 +37,7 @@ Currently however, it only supports:
 * [Simple Storage Service `"s3"`](#the-s3-task)
 * [Route 53 `"route53"`](#the-route53-task)
 * [CloudFront `"cloudfront"`](#the-cloudfront-task)
+* [SNS `"sns"`](#the-sns-task)
 
 -----
 
@@ -85,6 +86,10 @@ Amazon secret access key
 #### `bucket` *required* (String)
 
 Bucket name
+
+#### `sessionToken` (String)
+
+Amazon session token, required if you're using temporary access keys
 
 #### `region` (String)
 
@@ -143,6 +148,16 @@ Default `true`
 
 Upload files, whether or not they already exist (set to `false` if you never update existing files).
 
+### CopyFile (String)
+Default `None`
+
+Path to copy filewithin S3. ex. `my-bucket2/output/d.txt`
+
+### CopyFrom (String)
+Default `None`
+
+Path to copy all files within S3. ex. `my-bucket2/output/`
+
 #### `cache` (Boolean)
 
 Default `true`
@@ -197,7 +212,7 @@ For example `{Foo:"42"}` becomes `x-amz-meta-foo:42`.
 
 #### `charset` (String)
 
-Add a charset to your `Content-Type`. For example: `utf-8`.
+Add a charset to every one of your `Content-Type`. For example: `utf-8`. If this is not set, then all text files will get charset of UTF-8 by default.
 
 #### `mime` (Object)
 
@@ -349,7 +364,25 @@ s3: {
       }
     }
     src: "public/**"
+  },
+
+  //Copy file directly from s3 bucket to a different bucket
+  copyFile: {
+    src: "build/c.txt",
+    dest: "output/d.txt",
+    options: {
+      copyFile: "my-bucket2/output/d.txt"
+    }
+  },
+
+  //Copy all files in directory
+  copyFiles: {
+    src: "public/**",
+    options: {
+      copyFrom: 'my-bucket2/public'
+    }
   }
+
 }
 ```
 
@@ -455,11 +488,14 @@ Cache data returned from Route 53. Once records
 
 ### Features
 
-* Invalidate a list of files, up to the maximum allowed by CloudFront
+* Invalidate a list of files, up to the maximum allowed by CloudFront, like `/index.html` and `/pages/whatever.html`
+* Update CustomErrorResponses
+* Update OriginPath on the first origin in the distribution, other origins will stay the same
+* Update DefaultRootObject
 
 ### Usage
 
-To invalidate the files `/index.html` and `/pages/whatever.html`
+A sample configuration is below. Each property must follow the requirements from the [CloudFront updateDistribution Docs](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CloudFront.html#updateDistribution-property).
 
 ```js
   grunt.initConfig({
@@ -475,7 +511,15 @@ To invalidate the files `/index.html` and `/pages/whatever.html`
           invalidations: [
             '/index.html',
             '/pages/whatever.html'
-          ]
+          ],
+          customErrorResponses: [ {
+            ErrorCode: 0,
+            ErrorCachingMinTTL: 0,
+            ResponseCode: 'STRING_VALUE',
+            ResponsePagePath: 'STRING_VALUE'
+          } ],
+          originPath: 'STRING_VALUE',
+          defaultRootObject: 'STRING_VALUE'
         }
       }
     }
@@ -496,15 +540,83 @@ Amazon secret access key
 
 The CloudFront Distribution ID to be acted on
 
-#### `invalidations` *required* (Array)
+#### `invalidations` *optional* (Array)
 
 An array of strings that are each a root relative path to a file to be invalidated
 
+#### `customErrorResponses` *optional* (Array)
+
+An array of objects with the properties shown above
+
+#### `originPath` *optional* (String)
+
+A string to set the origin path for the first origin in the distribution
+
+#### `defaultRootObject` *optional* (String)
+
+A string to set the default root object for the distribution
+
+## The "sns" task
+
+### Features
+
+* Publish to a SNS topic
+
+### Usage
+
+To public a message
+
+```js
+  grunt.initConfig({
+    aws: grunt.file.readJSON("credentials.json"),
+    cloudfront: {
+      options: {
+        accessKeyId: "<%= aws.accessKeyId %>",
+        secretAccessKey: "<%= aws.secretAccessKey %>",
+        region: '<%= aws.region %>',
+        target: 'AWS:ARN:XXXX:XXXX:XXXX',
+        message: 'You got it',
+        subject: 'A Notification'
+      }
+    }
+  });
+```
+
+### Options
+
+#### `accessKeyId` *required* (String)
+
+Amazon access key id
+
+#### `secretAccessKey` *required* (String)
+
+Amazon secret access key
+
+#### `region` *required* (String)
+
+The region that the Topic is hosted under
+
+#### `target` *required* (String)
+
+The AWS ARN for the topic
+
+#### `message` *required* (String)
+
+The message content for the notification
+
+#### `subject` *required* (String)
+
+The subject to use for the notification
 
 ### References
 
-* [CloudFront AWS SDK API Docs](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CloudFront.html)
+* [SNS AWS SDK API Docs](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SNS.html)
 
+### Todo
+
+* Add other SNS functionality
+
+---
 
 #### MIT License
 
@@ -528,8 +640,3 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
-
-
