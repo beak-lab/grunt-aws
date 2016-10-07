@@ -100,16 +100,16 @@ module.exports = function(grunt) {
       'httpOptions'
     ), true);
 
-    console.log('')
-    console.log('Options')
-    console.log('-------')
-    console.log('-------', opts)
+    // console.log('')
+    // console.log('Options')
+    // console.log('-------')
+    // console.log('-------', opts)
     // console.log('Bucket:', opts.bucket)
     // console.log('Region:', opts.region)
     // console.log('Has key:', opts.secretAccessKey !== undefined)
     // console.log('Has Id:', opts.secretKeyId !== undefined)
-    console.log('-------')
-    console.log('')
+    // console.log('-------')
+    // console.log('')
 
     //s3 client
     var S3 = new AWS.S3({signatureVersion: opts.signatureVersion});
