@@ -63,6 +63,7 @@ module.exports = function(grunt) {
     // allow for command line overwriting of opts arguments!
     var commandLineAdditions = {};
     process.argv.forEach(function(value) {
+      console.log('Arg:', value);
       if (value.substr(0, 2) === '--') {
         value = value.slice(2); // remove the --
         // console.log('Key pair:', value);
