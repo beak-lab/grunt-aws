@@ -65,9 +65,10 @@ module.exports = function(grunt) {
     process.argv.forEach(function(value) {
       if (value.substr(0, 2) === '--') {
         value = value.slice(2); // remove the --
-        var commandLineOptions = value.split('=');
-        if (commandLineOptions.length === 2) { // make sure we have at least key value pairs
-          commandLineAdditions[commandLineOptions[0]] = commandLineOptions[1];
+        // console.log('Key pair:', value);
+        var rawKeys = value.split('=');
+        if (rawKeys.length >= 2) { // make sure we have at least key value pairs
+          commandLineAdditions[rawKeys[0]] = rawKeys.slice(1).join('');
         }
       }
     });
@@ -99,7 +100,7 @@ module.exports = function(grunt) {
     ), true);
 
     console.log('Bucket:', opts.bucket)
-    console.log('Region:', opts.region) 
+    console.log('Region:', opts.region)
     console.log('Has key:', opts.secretAccessKey !== undefined)
     console.log('Has Id:', opts.secretKeyId !== undefined)
 
