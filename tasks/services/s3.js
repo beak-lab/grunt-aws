@@ -98,6 +98,8 @@ module.exports = function(grunt) {
       'httpOptions'
     ), true);
 
+    console.log('Has key:', opts.secretAccessKey !== undefined)
+
     //s3 client
     var S3 = new AWS.S3({signatureVersion: opts.signatureVersion});
 
