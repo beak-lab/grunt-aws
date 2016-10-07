@@ -98,6 +98,8 @@ module.exports = function(grunt) {
       'httpOptions'
     ), true);
 
+    console.log('Bucket:', opts.bucket)
+    console.log('Region:', opts.region) 
     console.log('Has key:', opts.secretAccessKey !== undefined)
     console.log('Has Id:', opts.secretKeyId !== undefined)
 
